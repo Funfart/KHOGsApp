@@ -1,5 +1,18 @@
-export async function fetchNFTs(address) {
-  const res = await fetch(`/api/opensea?address=${address}`);
-  const data = await res.json();
-  return data.nfts || [];
+{
+  "name": "khogs-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "ethers": "^6.11.0",
+    "@walletconnect/ethereum-provider": "^2.11.0",
+    "siwe": "^2.3.2",
+    "next": "14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
 }
