@@ -6,7 +6,7 @@ import Character from './components/Character';
 import Navigation from './components/Navigation';
 import NFTCard from './components/NFTCard';
 import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './lib/wallet';
-import { fetchNFTs } from './pages/api/opensea';
+import { fetchNFTs } from './lib/opensea';
 
 export default function Page() {
   const tabsRef = useRef([]);
