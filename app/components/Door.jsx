@@ -1,80 +1,65 @@
-// /api/opensea.js
-// simple in-memory cache (persists across invocations on warm server)
-let cache = {};
+'use client';
 
-export default async function handler(req, res) {
-  try {
-    const { address } = req.query;
+import { useState, useRef } from 'react';
 
-    if (!address) {
-      return res.status(400).json({ error: "Missing address" });
-    }
+const CLOSED =
+  "https://ipfs.io/ipfs/bafkreicelhsdslcflfflph3hwsez3ytdle53nbnyr3i7f4yain4d5tbtqy";
 
-    // Your Polygon contract
-    const CONTRACT = "0x2b5323b91887b3ea02f7fe3785808c7f68545a87".toLowerCase();
+const OPEN =
+  "https://ipfs.io/ipfs/bafkreicngryldkw3ntzgndo3dsoowfee7i7jbp5kmerrdadrjonqhzsome";
 
-    const response = await fetch(
-      `https://api.opensea.io/api/v2/chain/polygon/account/${address}/nfts`,
-      {
-        headers: {
-          "X-API-KEY": process.env.DK_KHOGS_OPENSEA_API
-        }
-      }
-    );
+export default function Door({ onEnter }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const holdRef = useRef(null);
 
-    const data = await response.json();
+  // 🎯 NOW MATCHES YOUR TRUE SCENE (2560x1440)
+  const doorX = 2135; // ← convert from your placement
+  const doorY = 1225;
 
-    // return cached if exists
-    if (cache[address]) {
-      return res.status(200).json(cache[address]);
-    }
+  return (
+    <div
+      className={`door ${isOpen ? 'open' : ''} ${pressed ? 'pressed' : ''}`}
+      style={{
+        position: 'absolute',
+        left: `${(doorX / 2560) * 100}%`,
+        top: `${(doorY / 1440) * 100}%`,
+        transform: 'translate(-50%, -100%)',
+        zIndex: 5,
+        cursor: 'pointer'
+      }}
 
-    console.log("OS RAW:", data);
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => {
+        setIsOpen(false);
+        setPressed(false);
+      }}
 
-    const nfts = (data.nfts || [])
-      .filter(n => {
-        // Handle multiple contract field shapes
-        const addr =
-          n.contract ||
-          n.contract_address ||
-          n.collection?.contract_address;
+      onTouchStart={() => {
+        setPressed(true);
+        setIsOpen(true);
 
-        return addr?.toLowerCase() === CONTRACT;
-      })
-      .map(n => {
-        const metadata = n.metadata || {};
+        holdRef.current = setTimeout(() => {
+          if (onEnter) onEnter();
+        }, 300);
+      }}
 
-        return {
-          image:
-            n.display_image_url ||
-            n.image_url ||
-            n.image ||
-            metadata.image,
+      onTouchEnd={() => {
+        clearTimeout(holdRef.current);
+        setPressed(false);
 
-          name: n.name || metadata.name || "Unnamed NFT",
+        if (onEnter) onEnter();
+      }}
 
-          attributes:
-            n.traits ||
-            metadata.attributes ||
-            []
-        };
-      })
-      .filter(n => n.image);
-
-    console.log("FILTERED NFTs:", nfts.length);
-
-    const result = { nfts };
-
-    // store in cache
-    cache[address] = result;
-
-    return res.status(200).json(result);
-
-  } catch (err) {
-    console.error("API ERROR:", err);
-    return res.status(500).json({
-      error: "Internal Server Error",
-      details: err.message
-    });
-  }
+      onClick={() => {
+        if (onEnter) onEnter();
+      }}
+    >
+      <img
+        src={isOpen ? OPEN : CLOSED}
+        alt="door"
+        draggable={false}
+      />
+    </div>
+  );
 }
