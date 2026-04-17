@@ -173,7 +173,7 @@ html, body {
   bottom:0;
   left:0;
   height:100%;
-  z-index:3;
+  z-index:5;
   pointer-events:none;
 }
 
@@ -183,7 +183,7 @@ html, body {
   
   transform-origin: bottom center;
 
-  z-index:3;
+  z-index:2;
 
   cursor:pointer;
 
