@@ -7,67 +7,49 @@ const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nx
 
 export default function NPCManager() {
   const [npcs, setNPCs] = useState([]);
-
   const idRef = useRef(0);
-  const activeRef = useRef(true);
-  const loopRef = useRef(null);
 
-  // 🎲 PRE-SHUFFLED IMAGE POOL (NO REPEAT FEEL)
-  const poolRef = useRef(
-    Array.from({ length: 46 }, (_, i) => i + 1)
-      .sort(() => Math.random() - 0.5)
-  );
+  function getRandomNPC(id) {
+    const index = Math.floor(Math.random() * 46) + 1;
 
-  function getNextImage() {
-    if (poolRef.current.length === 0) {
-      poolRef.current = Array.from({ length: 46 }, (_, i) => i + 1)
-        .sort(() => Math.random() - 0.5);
-    }
-
-    const i = poolRef.current.pop();
-    return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
-  }
-
-  function createNPC() {
-    const direction = Math.random() < 0.5 ? 'left' : 'right';
-    const z = Math.random() < 0.5 ? 4 : 7;
+    const scale = 0.6 + Math.random() * 0.6;
 
     return {
-      id: idRef.current++,
-      src: getNextImage(),
-      direction,
-      z,
-      size: 1000,
-
-      duration: 8000 + Math.random() * 4000
+      id,
+      src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
+      direction: Math.random() > 0.5 ? 'right' : 'left',
+      scale,
+      size: 500 + scale * 500,
+      duration: (4000 + Math.random() * 4000) / scale
     };
   }
 
   useEffect(() => {
-    activeRef.current = true;
+    let active = true;
 
-    function spawn() {
-      if (!activeRef.current) return;
+    function spawnNPC() {
+      if (!active) return;
 
       setNPCs(prev => {
-        if (prev.length >= 2) return prev;
-        return [...prev, createNPC()];
+        if (prev.length >= 3) return prev;
+
+        const newNPC = getRandomNPC(idRef.current++);
+        return [...prev, newNPC];
       });
 
-      const delay = 5000 + Math.random() * 7000;
-      loopRef.current = setTimeout(spawn, delay);
+      const delay = 2000 + Math.random() * 5000;
+      setTimeout(spawnNPC, delay);
     }
 
-    spawn();
+    spawnNPC();
 
     return () => {
-      activeRef.current = false;
-      clearTimeout(loopRef.current); // 🔥 CRITICAL FIX
+      active = false;
     };
   }, []);
 
   function removeNPC(id) {
-    setNPCs(prev => prev.filter(n => n.id !== id));
+    setNPCs(prev => prev.filter(npc => npc.id !== id));
   }
 
   return (
