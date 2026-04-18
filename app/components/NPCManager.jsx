@@ -44,9 +44,9 @@ export default function NPCManager() {
     const baseSize = 840;
 
     let size;
-    if (z === 4) size = baseSize * 0.9;
+    if (z === 4) size = baseSize * 1;
     else if (z === 6) size = baseSize;
-    else size = baseSize * 1.2;
+    else size = baseSize * 1.1;
 
     // 🎯 SPEED (tie to depth = more realism)
     const speedBase = 0.12 + Math.random() * 0.12;
