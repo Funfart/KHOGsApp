@@ -11,7 +11,7 @@ export default function NPC({ data, onExit }) {
     const el = ref.current;
     if (!el) return;
 
-    const buffer = 600; // 🔥 ensures full off-screen spawn + exit
+    const buffer = 600;
 
     const startX =
       data.direction === 'right'
@@ -23,11 +23,9 @@ export default function NPC({ data, onExit }) {
         ? WORLD_WIDTH + buffer
         : -buffer;
 
-    // RESET
     el.style.transition = 'none';
     el.style.transform = `translateX(${startX}px)`;
 
-    // FORCE PAINT → START ANIMATION
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         el.style.transition = `transform ${data.duration}ms linear`;
@@ -35,26 +33,12 @@ export default function NPC({ data, onExit }) {
       });
     });
 
-    // 🔥 EDGE DETECTION EXIT (REAL FIX)
-    let raf;
+    // ✅ TIME-BASED EXIT (STABLE WITH SCALE)
+    const timeout = setTimeout(() => {
+      onExit(data.id);
+    }, data.duration + 300); // small buffer
 
-    const checkExit = () => {
-      const rect = el.getBoundingClientRect();
-
-      const offLeft = rect.right < -600;
-      const offRight = rect.left > window.innerWidth + 600;
-
-      if (offLeft || offRight) {
-        onExit(data.id);
-        return;
-      }
-
-      raf = requestAnimationFrame(checkExit);
-    };
-
-    raf = requestAnimationFrame(checkExit);
-
-    return () => cancelAnimationFrame(raf);
+    return () => clearTimeout(timeout);
   }, [data, onExit]);
 
   return (
@@ -65,15 +49,12 @@ export default function NPC({ data, onExit }) {
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
-
-        // 🔥 depth layering
         zIndex: data.z
       }}
     >
-      {/* 🦶 BOUNCE LAYER */}
       <div
         style={{
-          animation: `npcBounce ${0.3 + Math.random() * 0.2}s infinite ease-in-out`
+          animation: `npcBounce ${0.35}s infinite ease-in-out`
         }}
       >
         <img
@@ -81,10 +62,8 @@ export default function NPC({ data, onExit }) {
           alt="npc"
           draggable={false}
           style={{
-            width: `${data.size}px`,
-            height: 'auto',
+            width: '500px',
 
-            // 🎯 BASE ART FACES LEFT
             transform:
               data.direction === 'right'
                 ? 'scaleX(-1)'
