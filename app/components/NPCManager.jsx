@@ -13,7 +13,7 @@ export default function NPCManager() {
   const lastSpawnRef = useRef(0);
   const idRef = useRef(0);
 
-  const baseSize = 600; // 🔥 increase from 500
+  const baseSize = 260; // 🔥 increase from 500
 
   let size;
   if (z === 4) size = baseSize * 0.85;
