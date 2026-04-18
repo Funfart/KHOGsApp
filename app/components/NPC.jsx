@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
+const WORLD_WIDTH = 2560;
+
 export default function NPC({ data, onExit }) {
   const ref = useRef(null);
 
@@ -9,49 +11,50 @@ export default function NPC({ data, onExit }) {
     const el = ref.current;
     if (!el) return;
 
-    const startX = data.direction === 'right' ? -200 : 2760;
-    const endX = data.direction === 'right' ? 2760 : -200;
+    const buffer = 400; // 🔥 fully off-screen spawn/exit
 
-    el.style.transform = `
-      translateX(${startX}px)
-      translateY(-50%)
-      scale(${data.scale})
-    `;
+    const startX = data.direction === 'right'
+      ? -buffer
+      : WORLD_WIDTH + buffer;
+
+    const endX = data.direction === 'right'
+      ? WORLD_WIDTH + buffer
+      : -buffer;
+
+    // ✅ force layout before animating (prevents stuck bug)
+    el.style.transition = 'none';
+    el.style.transform = `translateX(${startX}px)`;
 
     requestAnimationFrame(() => {
-      el.style.transition = `transform ${data.duration}ms linear`;
-
-      el.style.transform = `
-        translateX(${endX}px)
-        translateY(-50%)
-        scale(${data.scale})
-      `;
+      requestAnimationFrame(() => {
+        el.style.transition = `transform ${data.duration}ms linear`;
+        el.style.transform = `translateX(${endX}px)`;
+      });
     });
 
     const timeout = setTimeout(() => {
       onExit(data.id);
-    }, data.duration);
+    }, data.duration + 500); // slight delay after exit
 
     return () => clearTimeout(timeout);
   }, [data, onExit]);
 
   return (
- <div
+    <div
       ref={ref}
       style={{
         position: 'absolute',
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
-
-        // 🔥 depth layering
-        zIndex: data.z
+        zIndex: data.scale > 0.9 ? 7 : 4
       }}
     >
       {/* 🦶 BOUNCE LAYER */}
       <div
+        className="npc-bounce"
         style={{
-          animation: `npcBounce ${0.3 + Math.random() * 0.2}s infinite ease-in-out`
+          animationDuration: `${0.35 + Math.random() * 0.15}s` // ⚡ faster
         }}
       >
         <img
@@ -62,15 +65,16 @@ export default function NPC({ data, onExit }) {
             width: `${data.size}px`,
             height: 'auto',
 
-            // 🎯 BASE ART FACES LEFT
+            // 🎯 FIXED: base art faces LEFT
             transform:
               data.direction === 'right'
-                ? 'scaleX(-1)'
-                : 'scaleX(1)',
+                ? 'scaleX(-1)' // flip to face right
+                : 'scaleX(1)', // keep natural left
 
             transformOrigin: 'bottom center'
           }}
         />
       </div>
     </div>
+  );
 }
