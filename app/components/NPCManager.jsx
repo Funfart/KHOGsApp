@@ -31,13 +31,13 @@ export default function NPCManager() {
       if (!active) return;
 
       setNPCs(prev => {
-        if (prev.length >= 3) return prev;
+        if (prev.length >= 2) return prev;
 
         const newNPC = getRandomNPC(idRef.current++);
         return [...prev, newNPC];
       });
 
-      const delay = 2000 + Math.random() * 5000;
+      const delay = 3000 + Math.random() * 5000;
       setTimeout(spawnNPC, delay);
     }
 
