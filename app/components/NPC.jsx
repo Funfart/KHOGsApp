@@ -36,24 +36,41 @@ export default function NPC({ data, onExit }) {
   }, [data, onExit]);
 
   return (
-<img
-  ref={ref}
-  src={data.src}
-  className="npc"
-  style={{
-    top: `${data.y}%`,
-    position: 'absolute',
-    pointerEvents: 'none',
+ <div
+      ref={ref}
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        pointerEvents: 'none',
 
-    // ✅ CONTROL REAL SIZE
-    width: `${data.size}px`,
-    height: 'auto',
+        // 🔥 depth layering
+        zIndex: data.z
+      }}
+    >
+      {/* 🦶 BOUNCE LAYER */}
+      <div
+        style={{
+          animation: `npcBounce ${0.3 + Math.random() * 0.2}s infinite ease-in-out`
+        }}
+      >
+        <img
+          src={data.src}
+          alt="npc"
+          draggable={false}
+          style={{
+            width: `${data.size}px`,
+            height: 'auto',
 
-    zIndex: data.scale > 0.9 ? 6 : 4,
-    animation: 'npcBounce 0.6s infinite ease-in-out'
-  }}
-  alt="npc"
-  draggable={false}
-/>
-  );
+            // 🎯 BASE ART FACES LEFT
+            transform:
+              data.direction === 'right'
+                ? 'scaleX(-1)'
+                : 'scaleX(1)',
+
+            transformOrigin: 'bottom center'
+          }}
+        />
+      </div>
+    </div>
 }
