@@ -47,7 +47,7 @@ export default function NPCManager() {
       src: getNextImage(),
       direction,
       z: Math.random() < 0.5 ? 4 : 7,
-      size: 500,
+      size: 550,
 
       x:
         direction === 'right'
