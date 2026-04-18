@@ -13,9 +13,13 @@ export default function Door({ onEnter }) {
   const [pressed, setPressed] = useState(false);
   const holdRef = useRef(null);
 
-  // 🎯 NOW MATCHES YOUR TRUE SCENE (2560x1440)
-  const doorX = 2127; // ← convert from your placement
+  // 🎯 world position (2560x1440 space)
+  const doorX = 2127;
   const doorY = 1153;
+
+  const triggerEnter = () => {
+  if (onEnter) onEnter();
+};
 
   return (
     <div
@@ -40,26 +44,31 @@ export default function Door({ onEnter }) {
         setIsOpen(true);
 
         holdRef.current = setTimeout(() => {
-          if (onEnter) onEnter();
+          onEnter?.();
         }, 300);
       }}
 
-      onTouchEnd={() => {
-        clearTimeout(holdRef.current);
-        setPressed(false);
+onClick={() => {
+  setPressed(true);
+  setTimeout(() => {
+    triggerEnter();
+    setPressed(false);
+  }, 120);
+}}
 
-        if (onEnter) onEnter();
-      }}
+onTouchEnd={(e) => {
+  e.preventDefault();
+  triggerEnter();
+  setPressed(false);
+}}
+    > {/* ✅ THIS WAS MISSING */}
 
-      onClick={() => {
-        if (onEnter) onEnter();
-      }}
-    >
       <img
         src={isOpen ? OPEN : CLOSED}
         alt="door"
         draggable={false}
       />
+
     </div>
   );
 }
