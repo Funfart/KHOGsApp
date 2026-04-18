@@ -13,14 +13,7 @@ export default function NPCManager() {
   const lastSpawnRef = useRef(0);
   const idRef = useRef(0);
 
-  const baseSize = 260; // 🔥 increase from 500
-
-  let size;
-  if (z === 4) size = baseSize * 0.85;
-  if (z === 6) size = baseSize;
-  if (z === 10) size = baseSize * 1.2;
-
-  // 🎲 shuffled pool
+  // 🎲 shuffled pool (prevents repeats)
   const poolRef = useRef(
     Array.from({ length: 46 }, (_, i) => i + 1)
       .sort(() => Math.random() - 0.5)
@@ -38,23 +31,36 @@ export default function NPCManager() {
 
   function createNPC() {
     const direction = Math.random() < 0.5 ? 'left' : 'right';
-    
+
+    // 🎯 DEPTH (CORRECT)
     const depth = Math.random();
-    
+
     let z;
-    
-    if (depth < 0.33) z = 4;      // behind character
-    else if (depth < 0.66) z = 6; // same plane
-    else z = 10;                  // in front
-    
-    const speed = 0.15 + Math.random() * 0.15; // px per ms
+    if (depth < 0.33) z = 4;      // behind
+    else if (depth < 0.66) z = 6; // mid
+    else z = 10;                  // front
+
+    // 🎯 SIZE BASED ON DEPTH
+    const baseSize = 260;
+
+    let size;
+    if (z === 4) size = baseSize * 0.8;
+    else if (z === 6) size = baseSize;
+    else size = baseSize * 1.2;
+
+    // 🎯 SPEED (tie to depth = more realism)
+    const speedBase = 0.12 + Math.random() * 0.12;
+    const speed =
+      z === 4 ? speedBase * 0.8 :
+      z === 6 ? speedBase :
+      speedBase * 1.2;
 
     return {
       id: idRef.current++,
       src: getNextImage(),
       direction,
-      z: Math.random() < 0.5 ? 4 : 7,
-      size: 550,
+      z,
+      size,
 
       x:
         direction === 'right'
@@ -68,12 +74,12 @@ export default function NPCManager() {
   useEffect(() => {
     let raf;
 
-    function loop(time) {
+    function loop() {
       const now = performance.now();
 
       let next = [...npcsRef.current];
 
-      // 🎯 SPAWN CONTROL
+      // 🎯 SPAWN CONTROL (stable)
       if (
         next.length < 3 &&
         now - lastSpawnRef.current > 2500 + Math.random() * 3000
@@ -82,19 +88,19 @@ export default function NPCManager() {
         lastSpawnRef.current = now;
       }
 
-      // 🎯 UPDATE POSITIONS
+      // 🎯 MOVE
       next = next.map(npc => {
         const dir = npc.direction === 'right' ? 1 : -1;
 
         return {
           ...npc,
-          x: npc.x + dir * npc.speed * 16 // approx frame step
+          x: npc.x + dir * npc.speed * 16
         };
       });
 
-      // 🎯 REMOVE OFFSCREEN (TRUE WORLD SPACE)
+      // 🎯 CLEAN EXIT (no popping)
       next = next.filter(npc => {
-        return npc.x > -800 && npc.x < WORLD_WIDTH + 800;
+        return npc.x > -900 && npc.x < WORLD_WIDTH + 900;
       });
 
       npcsRef.current = next;
