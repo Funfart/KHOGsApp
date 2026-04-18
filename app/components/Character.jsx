@@ -34,18 +34,22 @@ export default function Character({ currentTab, tabsRef }) {
 
   const offsets = { 0: -120, 3: 120 };
 
-  function getTabX(index) {
-    const el = tabsRef.current[index];
-    if (!el || !ref.current) return 0;
+function getTabX(index) {
+  const el = tabsRef.current[index];
+  const char = ref.current;
 
-    const rect = el.getBoundingClientRect();
-    const base =
-      rect.left +
-      rect.width / 2 -
-      ref.current.offsetWidth / 2;
+  if (!el || !char) return 0;
 
-    return base + (offsets[index] || 0);
-  }
+  const rect = el.getBoundingClientRect();
+
+  if (!rect || rect.width === 0) return 0;
+
+  const scale = getScale();
+
+  const worldX = (rect.left + rect.width / 2) / scale;
+
+  return worldX + (offsets[index] || 0);
+}
 
   function resetIdle() {
     clearTimeout(idleTimer.current);
@@ -174,27 +178,21 @@ export default function Character({ currentTab, tabsRef }) {
   }, [currentTab]);
 
   // 🟢 INIT
-  useEffect(() => {
-    const char = ref.current;
-    if (!char) return;
+useEffect(() => {
+  const char = ref.current;
+  if (!char) return;
 
-    const start = () => {
-      char.style.transform = `translateX(${getTabX(0)}px)`;
-      char.src = assets.right1;
-      facing.current = "right";
-      resetIdle();
-    };
+  const start = () => {
+    const startX = getTabX(0);
 
-    if (char.complete) start();
-    else char.onload = start;
-  }, []);
+    char.style.transform = `translateX(${startX}px) translateX(-50%)`;
 
-  return (
-    <img
-      ref={ref}
-      className="character"
-      src={assets.right1}
-      alt="character"
-    />
-  );
+    char.src = assets.right1;
+    facing.current = "right";
+    resetIdle();
+  };
+
+  if (char.complete) start();
+  else char.onload = start;
+}, []);
 }
