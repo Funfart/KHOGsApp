@@ -41,7 +41,7 @@ export default function NPCManager() {
     else z = 10;                  // front
 
     // 🎯 SIZE BASED ON DEPTH
-    const baseSize = 500;
+    const baseSize = 800;
 
     let size;
     if (z === 4) size = baseSize * 0.8;
