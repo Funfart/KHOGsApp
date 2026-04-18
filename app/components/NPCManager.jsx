@@ -10,50 +10,59 @@ export default function NPCManager() {
 
   const idRef = useRef(0);
   const activeRef = useRef(true);
+  const loopRef = useRef(null);
 
-  function getRandomImage() {
-    const i = Math.floor(Math.random() * 46) + 1;
+  // 🎲 PRE-SHUFFLED IMAGE POOL (NO REPEAT FEEL)
+  const poolRef = useRef(
+    Array.from({ length: 46 }, (_, i) => i + 1)
+      .sort(() => Math.random() - 0.5)
+  );
+
+  function getNextImage() {
+    if (poolRef.current.length === 0) {
+      poolRef.current = Array.from({ length: 46 }, (_, i) => i + 1)
+        .sort(() => Math.random() - 0.5);
+    }
+
+    const i = poolRef.current.pop();
     return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
   }
 
   function createNPC() {
     const direction = Math.random() < 0.5 ? 'left' : 'right';
-    const depth = Math.random() < 0.5 ? 4 : 7;
+    const z = Math.random() < 0.5 ? 4 : 7;
 
     return {
       id: idRef.current++,
-      src: getRandomImage(),
+      src: getNextImage(),
       direction,
-      z: depth,
+      z,
+      size: 500,
 
-      size: 500, // 🔥 fixed size
-
-      // slower variation
-      duration: 7000 + Math.random() * 4000,
-
-      // slight vertical variation (optional)
-      y: 0
+      duration: 8000 + Math.random() * 4000
     };
   }
 
   useEffect(() => {
-    function spawnLoop() {
+    activeRef.current = true;
+
+    function spawn() {
       if (!activeRef.current) return;
 
       setNPCs(prev => {
         if (prev.length >= 3) return prev;
-
         return [...prev, createNPC()];
       });
 
-      const delay = 4000 + Math.random() * 5000;
-      setTimeout(spawnLoop, delay);
+      const delay = 3000 + Math.random() * 4000;
+      loopRef.current = setTimeout(spawn, delay);
     }
 
-    spawnLoop();
+    spawn();
 
     return () => {
       activeRef.current = false;
+      clearTimeout(loopRef.current); // 🔥 CRITICAL FIX
     };
   }, []);
 
