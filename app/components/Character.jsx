@@ -209,22 +209,30 @@ setTimeout(() => {
 }, [currentTab]);
 
   // 🟢 INIT
-// 🟢 INIT
-useEffect(() => {
-  const char = ref.current;
-  if (!char) return;
+  useEffect(() => {
+    const char = ref.current;
+    if (!char) return;
 
-  const start = () => {
-    const startX = getTabX(0);
+    const start = () => {
+      const startX = getTabX(0);
 
-    char.style.transform = `translateX(${startX}px) translateX(-50%)`;
+      char.style.transform = `translateX(${startX}px) translateX(-50%)`;
+      char.src = assets.right1;
 
-    char.src = assets.right1;
-    facing.current = "right";
-    resetIdle();
-  };
+      facing.current = "right";
+      resetIdle();
+    };
 
-  if (char.complete) start();
-  else char.onload = start;
-}, []);
+    if (char.complete) start();
+    else char.onload = start;
+  }, []);
+
+  return (
+    <img
+      ref={ref}
+      className="character"
+      src={assets.right1}
+      alt="character"
+    />
+  );
 }
