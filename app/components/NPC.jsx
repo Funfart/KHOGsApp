@@ -8,13 +8,16 @@ export default function NPC({ data }) {
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
+
         zIndex: data.z,
+
+        // 🔥 WORLD POSITION ONLY
         transform: `translateX(${data.x}px)`
       }}
     >
       <div
         style={{
-          animation: `npcBounce 0.35s infinite ease-in-out`
+          animation: `npcBounce 0.4s infinite ease-in-out`
         }}
       >
         <img
@@ -22,9 +25,9 @@ export default function NPC({ data }) {
           alt="npc"
           draggable={false}
           style={{
-            // 🔥 HEIGHT-BASED SCALING (THIS FIXES EVERYTHING)
-            height: `${(data.size / 1440) * 100}%`,
-            width: 'auto',
+            // ✅ PURE PIXELS (NO %, NO SCALE)
+            width: `${data.size}px`,
+            height: 'auto',
 
             transform:
               data.direction === 'right'
