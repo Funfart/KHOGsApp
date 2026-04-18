@@ -31,7 +31,15 @@ export default function NPCManager() {
 
   function createNPC() {
     const direction = Math.random() < 0.5 ? 'left' : 'right';
-
+    
+    const depth = Math.random();
+    
+    let z;
+    
+    if (depth < 0.33) z = 4;      // behind character
+    else if (depth < 0.66) z = 6; // same plane
+    else z = 10;                  // in front
+    
     const speed = 0.15 + Math.random() * 0.15; // px per ms
 
     return {
