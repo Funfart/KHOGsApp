@@ -37,7 +37,7 @@ export default function NPCManager() {
       src: getNextImage(),
       direction,
       z,
-      size: 500,
+      size: 1000,
 
       duration: 8000 + Math.random() * 4000
     };
@@ -50,7 +50,7 @@ export default function NPCManager() {
       if (!activeRef.current) return;
 
       setNPCs(prev => {
-        if (prev.length >= 3) return prev;
+        if (prev.length >= 2) return prev;
         return [...prev, createNPC()];
       });
 
