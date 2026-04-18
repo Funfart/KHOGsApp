@@ -8,9 +8,7 @@ export default function NPC({ data }) {
         bottom: 0,
         left: 0,
         pointerEvents: 'none',
-
         zIndex: data.z,
-
         transform: `translateX(${data.x}px)`
       }}
     >
@@ -24,9 +22,9 @@ export default function NPC({ data }) {
           alt="npc"
           draggable={false}
           style={{
-            // 🔥 WORLD-RELATIVE SIZE (like door positioning)
-            width: `${(data.size / 2560) * 100}%`,
-            maxWidth: '500px',
+            // 🔥 HEIGHT-BASED SCALING (THIS FIXES EVERYTHING)
+            height: `${(data.size / 1440) * 100}%`,
+            width: 'auto',
 
             transform:
               data.direction === 'right'
