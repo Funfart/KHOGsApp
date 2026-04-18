@@ -249,7 +249,7 @@ html, body {
   height:100%;
   transform:translateX(0) translateX(-50%);
   transform-origin:bottom center;
-  z-index:5;
+  z-index:7;
   pointer-events:none;
 }
 
