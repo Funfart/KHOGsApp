@@ -1,80 +1,61 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import NPC from './NPC';
 
 const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
 
+function getRandomNPC(id) {
+  const index = Math.floor(Math.random() * 46) + 1;
+
+  const scale = 0.6 + Math.random() * 0.6;
+
+  return {
+    id,
+    src: `${BASE_CID}/KnuckleheadsOG%23${index}.png`,
+
+    direction: Math.random() > 0.5 ? 'right' : 'left',
+
+    duration: 4000 + Math.random() * 5000,
+
+    y: 72 + Math.random() * 18,
+
+    scale,
+
+    // 🎯 REAL SIZE CONTROL (THIS FIXES VISIBILITY)
+    size: 520 + scale * 520
+  };
+}
+
 export default function NPCManager() {
-  const [npcs, setNPCs] = useState([]);
-
-  const idRef = useRef(0);
-  const indexRef = useRef(1);
-  const activeRef = useRef(true);
-  const lastDirectionRef = useRef(null);
-
-  function getNextImage() {
-    const i = indexRef.current;
-    indexRef.current++;
-    if (indexRef.current > 46) indexRef.current = 1;
-
-    return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
-  }
-
-  function createNPC() {
-    let direction = Math.random() < 0.5 ? 'left' : 'right';
-
-    // prevent same direction spam
-    if (direction === lastDirectionRef.current) {
-      direction = direction === 'left' ? 'right' : 'left';
-    }
-
-    lastDirectionRef.current = direction;
-
-    const scale = 0.7 + Math.random() * 0.6;
-
-    return {
-      id: idRef.current++,
-      src: getNextImage(),
-      direction,
-      scale,
-      size: 500 + scale * 500,
-
-      // slower = larger NPC feels heavier
-      duration: (6000 + Math.random() * 4000) / scale
-    };
-  }
+  const [npcs, setNpcs] = useState([]);
 
   useEffect(() => {
-    function spawnLoop() {
-      if (!activeRef.current) return;
+    let idCounter = 0;
 
-      setNPCs(prev => {
+    function spawnNPC() {
+      setNpcs(prev => {
         if (prev.length >= 3) return prev;
 
-        const npc = createNPC();
-        return [...prev, npc];
+        const newNPC = getRandomNPC(idCounter++);
+        return [...prev, newNPC];
       });
 
-      const delay = 3000 + Math.random() * 5000;
-      setTimeout(spawnLoop, delay);
+      const delay = 2000 + Math.random() * 5000;
+      setTimeout(spawnNPC, delay);
     }
 
-    spawnLoop();
-
-    return () => {
-      activeRef.current = false;
-    };
+    spawnNPC();
   }, []);
 
-  function removeNPC(id) {
-    setNPCs(prev => prev.filter(n => n.id !== id));
+  function handleExit(id) {
+    setNpcs(prev => prev.filter(npc => npc.id !== id));
   }
 
   return (
     <>
       {npcs.map(npc => (
-        <NPC key={npc.id} data={npc} onExit={removeNPC} />
+        <NPC key={npc.id} data={npc} onExit={handleExit} />
       ))}
     </>
   );
