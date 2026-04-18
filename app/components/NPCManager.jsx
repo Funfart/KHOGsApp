@@ -13,6 +13,13 @@ export default function NPCManager() {
   const lastSpawnRef = useRef(0);
   const idRef = useRef(0);
 
+  const baseSize = 600; // 🔥 increase from 500
+
+  let size;
+  if (z === 4) size = baseSize * 0.85;
+  if (z === 6) size = baseSize;
+  if (z === 10) size = baseSize * 1.2;
+
   // 🎲 shuffled pool
   const poolRef = useRef(
     Array.from({ length: 46 }, (_, i) => i + 1)
