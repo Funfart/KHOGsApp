@@ -16,7 +16,7 @@ function getRandomNPC() {
 
 export default function ShopWalker() {
   const ref = useRef(null);
-   const bounceRef = useRef(false);
+  const bounceRef = useRef(false);
 
   const [npc, setNpc] = useState(null);
 
@@ -128,7 +128,7 @@ setNpc(prev => {
       }}
     >
       <div
-      className="npc-skate-bounce"
+      //className="npc-skate-bounce"
       style={{
         animationDuration: `${1.2 + Math.random() * 1.5}s`
       }}
