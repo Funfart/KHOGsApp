@@ -8,6 +8,8 @@ import NFTCard from './components/NFTCard';
 import { connectWallet, reconnectWallet, handleMobileWalletRedirect } from './lib/wallet';
 import { fetchNFTs } from './lib/opensea';
 import NPCManager from './components/NPCManager';
+import ShopScene from './components/ShopScene';
+//import ShopWalker from './components/ShopWalker';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -15,6 +17,9 @@ export default function Page() {
   const [wallet, setWallet] = useState(null);
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const [scene, setScene] = useState('landing'); // 'landing' | 'shop'
+  const [transitioning, setTransitioning] = useState(false);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -98,25 +103,29 @@ useEffect(() => {
     <div className="viewport">
 
       {/* 🎬 WRAPPER */}
-      <div className="scene-wrapper">
-        <div className="scene">
+<div className="scene-wrapper">
 
-          {/* 🌄 BACKGROUND */}
-          <img
-            className="bg"
-            src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
-            alt="background"
-          />
+  {scene === 'landing' && (
+    <div className="scene">
+    <img
+      className="bg"
+      src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+      alt="background"
+    />
 
-          {/* 🚪 DOOR */}
-          {/*<Door onEnter={() => console.log("🚪 ENTER ROOM")} />*/}
-          <Door onEnter={() => setShowDoorModal(true)} />
-          <NPCManager />
-          {/* 🎮 CHARACTER */}
-          <Character currentTab={tab} tabsRef={tabsRef} />
+      <Door onEnter={() => setShowDoorModal(true)} />
+      <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
+       {/* <Character currentTab={tab} tabsRef={tabsRef} />
+      <ShopWalker />*/}
+      <NPCManager />
+    </div>
+  )}
 
-        </div>
-      </div>
+  {scene === 'shop' && (
+    <ShopScene tab={tab} tabsRef={tabsRef} />
+  )}
+
+</div>
 
       {/* 🧭 NAV */}
       <Navigation
@@ -147,7 +156,24 @@ useEffect(() => {
     {widescreen ? 'Auto View' : 'Widescreen'}
   </button>
 )}
+{scene === 'shop' && !transitioning && (
+  <button
+    className="leave-shop"
+    onClick={() => {
+      setTransitioning(true);
 
+      setTimeout(() => {
+        setScene('landing');
+      }, 400);
+
+      setTimeout(() => {
+        setTransitioning(false);
+      }, 900);
+    }}
+  >
+    ← Leave Shop
+  </button>
+)}
       {/* 🎠 NFT CARD */}
       {tab === 3 && nfts.length > 0 && (
         <NFTCard
@@ -156,7 +182,13 @@ useEffect(() => {
           setActiveIndex={setActiveIndex}
         />
       )}
-
+      
+{transitioning && (
+  <div className="scene-transition">
+    <div className="transition-text">Entering Shop...</div>
+  </div>
+)}
+      
 {showDoorModal && (
   <div className="modal-overlay" onClick={() => setShowDoorModal(false)}>
     <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -180,9 +212,26 @@ useEffect(() => {
         KHOGs Collection
       </a>
 
-    </div>
-  </div>
-)}
+      <button
+        className="modal-btn secondary"
+        onClick={() => {
+          setTransitioning(true);
+      
+          setTimeout(() => {
+            setScene('shop');
+          }, 400);
+      
+          setTimeout(() => {
+            setTransitioning(false);
+          }, 900);
+        }}
+      >
+        Enter Shop
+      </button>
+      
+          </div>
+        </div>
+      )}
       
       <style jsx global>{`
 
@@ -249,7 +298,7 @@ html, body {
   height:100%;
   transform:translateX(0) translateX(-50%);
   transform-origin:bottom center;
-  z-index:7;
+  z-index:18;
   pointer-events:none;
 }
 
@@ -276,6 +325,34 @@ html, body {
 
 .door.pressed img {
   transform: scale(3.30);
+}
+
+/* 🚪 DOOR TRANSITION*/
+.scene-transition {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeInOut 0.9s ease forwards;
+}
+
+.transition-text {
+  color: white;
+  font-size: 18px;
+  opacity: 0.8;
+  animation: pulseText 1s infinite;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* 🧭 NAV */
@@ -479,6 +556,80 @@ html, body {
   50% {
     transform: translateY(-20px);
   }
+}
+
+.shop-scene .shop-counter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+
+.counter-back {
+  position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.counter-front {
+ position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 🎯 Layer ordering */
+.bg { z-index: 0; }
+.npc-layer { z-index: 3; }
+.counter-back { z-index: 5; }
+.counter-front { z-index: 6; }
+
+/* Character stays above */
+.character { z-index: 18; }
+
+.leave-shop {
+  position: absolute;
+  bottom: 20px;
+  left: 75px;
+
+  z-index: 30;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  background: rgba(0,0,0,0.75);
+  color: white;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  backdrop-filter: blur(10px);
+
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.leave-shop:active {
+  transform: scale(0.92);
+}
+
+.leave-shop:hover {
+  background: rgba(255,255,255,0.2);
+}
+@keyframes idleSway {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(1deg); }
 }
       `}</style>
     </div>
