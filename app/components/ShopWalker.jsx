@@ -119,7 +119,7 @@ setNpc(prev => {
       ref={ref}
       style={{
         position: 'absolute',
-        bottom: '42%', // 🔥 adjust Y position here
+        bottom: '32%', // 🔥 adjust Y position here
         left: 0,
            transform: `translate3d(${npc.x}px, 0, 0)`,
           //transform: `translateX(${npc.x}px)`,
@@ -144,7 +144,7 @@ setNpc(prev => {
           alt="shop-walker"
           draggable={false}
           style={{
-            width: '320px', // 🔥 tuned size
+            width: '920px', // 🔥 tuned size
             height: 'auto',
             transform:
               npc.direction === 'right'
