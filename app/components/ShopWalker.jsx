@@ -36,42 +36,72 @@ export default function ShopWalker() {
     }
 
     function loop() {
-      setNpc(prev => {
-        if (!prev) return prev;
+      const bounceRef = useRef(false);
+setNpc(prev => {
+  if (!prev) return prev;
 
-        let next = { ...prev };
+  let next = { ...prev };
 
-        // 👉 WALK RIGHT
-        if (next.state === 'walking-right') {
-          next.x += next.speed * 16;
+  // 👉 WALK RIGHT
+  if (next.state === 'walking-right') {
+    next.x += next.speed * 16;
 
-          if (next.x >= WORLD_WIDTH - 200) {
-            next.state = 'pause';
-            next.pauseUntil = performance.now() + (7000 + Math.random() * 7000);
-          }
-        }
+    // 🎯 RANDOM IMPACT (very rare)
+    if (Math.random() < 0.015 && !bounceRef.current) {
+      bounceRef.current = true;
 
-        // 👉 PAUSE
-        else if (next.state === 'pause') {
-          if (performance.now() >= next.pauseUntil) {
-            next.state = 'walking-left';
-            next.direction = 'left';
-          }
-        }
+      const el = ref.current?.querySelector('div');
+      if (el) {
+        el.classList.add('npc-impact');
 
-        // 👉 WALK LEFT (EXIT)
-        else if (next.state === 'walking-left') {
-          next.x -= next.speed * 16;
+        setTimeout(() => {
+          el.classList.remove('npc-impact');
+          bounceRef.current = false;
+        }, 250);
+      }
+    }
 
-          if (next.x < -500) {
-            // despawn and schedule next spawn
-            setTimeout(() => spawn(), 30000 + Math.random() * 15000);
-            return null;
-          }
-        }
+    if (next.x >= WORLD_WIDTH - 200) {
+      next.state = 'pause';
+      next.pauseUntil = performance.now() + (7000 + Math.random() * 7000);
+    }
+  }
 
-        return next;
-      });
+  // 👉 PAUSE
+  else if (next.state === 'pause') {
+    if (performance.now() >= next.pauseUntil) {
+      next.state = 'walking-left';
+      next.direction = 'left';
+    }
+  }
+
+  // 👉 WALK LEFT
+  else if (next.state === 'walking-left') {
+    next.x -= next.speed * 16;
+
+    // 🎯 RANDOM IMPACT AGAIN
+    if (Math.random() < 0.015 && !bounceRef.current) {
+      bounceRef.current = true;
+
+      const el = ref.current?.querySelector('div');
+      if (el) {
+        el.classList.add('npc-impact');
+
+        setTimeout(() => {
+          el.classList.remove('npc-impact');
+          bounceRef.current = false;
+        }, 250);
+      }
+    }
+
+    if (next.x < -500) {
+      setTimeout(() => spawn(), 30000 + Math.random() * 15000);
+      return null;
+    }
+  }
+
+  return next;
+});
 
       raf = requestAnimationFrame(loop);
     }
