@@ -559,8 +559,7 @@ html, body {
 
 @keyframes npcImpact {
   0%   { transform: translateY(0); }
-  
-  30% { transform: translateY(-10px) translateX(2px); }
+  30%  { transform: translateY(-10px); }
   60%  { transform: translateY(2px); }
   100% { transform: translateY(0); }
 }
