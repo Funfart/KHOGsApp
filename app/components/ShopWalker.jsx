@@ -119,7 +119,7 @@ setNpc(prev => {
       ref={ref}
       style={{
         position: 'absolute',
-        bottom: '72%', // 🔥 adjust Y position here
+        bottom: '42%', // 🔥 adjust Y position here
         left: 0,
            transform: `translate3d(${npc.x}px, 0, 0)`,
           //transform: `translateX(${npc.x}px)`,
