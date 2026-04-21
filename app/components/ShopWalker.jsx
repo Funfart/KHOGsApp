@@ -144,7 +144,7 @@ setNpc(prev => {
           alt="shop-walker"
           draggable={false}
           style={{
-            width: '520px', // 🔥 tuned size
+            width: '320px', // 🔥 tuned size
             height: 'auto',
             transform:
               npc.direction === 'right'
