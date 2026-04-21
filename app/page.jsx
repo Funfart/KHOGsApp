@@ -557,8 +557,15 @@ html, body {
   }
 }
 
-.npc-skate-bounce {
-  animation: npcSkateBounce infinite ease-in-out;
+@keyframes npcImpact {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  60%  { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+.npc-impact {
+  animation: npcImpact 0.25s ease-out;
 }
 
 /* 🔥 stronger + snappier bounce */
