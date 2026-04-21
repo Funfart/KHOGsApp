@@ -16,6 +16,7 @@ function getRandomNPC() {
 
 export default function ShopWalker() {
   const ref = useRef(null);
+   const bounceRef = useRef(false);
 
   const [npc, setNpc] = useState(null);
 
@@ -36,7 +37,6 @@ export default function ShopWalker() {
     }
 
     function loop() {
-      const bounceRef = useRef(false);
 setNpc(prev => {
   if (!prev) return prev;
 
