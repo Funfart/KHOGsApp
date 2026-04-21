@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const WORLD_WIDTH = 2560;
-const BASE_CID = "https://ipfs.io/ipfs/bafybeibfxdrczze54ghfsikviisgq7g2dscu36tfsecyy63ths5i5kk4ye";
+const BASE_CID = "https://ipfs.io/ipfs/bafybeidp5awfrg6zk2oo4q6cgxzvd2byff2eklkxdd7uks2orblbr3zng4";
 
 //Array of 46 
 //const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
