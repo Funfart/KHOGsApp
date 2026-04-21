@@ -91,23 +91,30 @@ export default function ShopWalker() {
         position: 'absolute',
         bottom: '52%', // 🔥 adjust Y position here
         left: 0,
-        transform: `translateX(${npc.x}px)`,
+           transform: `translate3d(${npc.x}px, 0, 0)`,
+          //transform: `translateX(${npc.x}px)`,
         zIndex: 2, // between bg and counter1
         pointerEvents: 'none'
       }}
     >
       <div
+      className="npc-skate-bounce"
+      style={{
+        animationDuration: `${1.2 + Math.random() * 1.5}s`
+      }}
+    >
+      {/** <div
         className="npc-bounce"
         style={{
           animationDuration: '0.35s'
         }}
-      >
+      >**/}
         <img
           src={npc.src}
           alt="shop-walker"
           draggable={false}
           style={{
-            width: '420px', // 🔥 tuned size
+            width: '520px', // 🔥 tuned size
             height: 'auto',
             transform:
               npc.direction === 'right'
