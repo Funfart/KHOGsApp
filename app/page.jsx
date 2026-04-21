@@ -672,7 +672,3 @@ object-fit: cover;
     </div>
   );
 }
-      `}</style>
-    </div>
-  );
-}
