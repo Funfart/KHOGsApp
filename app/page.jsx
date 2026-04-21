@@ -547,6 +547,19 @@ html, body {
 .npc-bounce {
   animation: npcBounce 0.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* 🪄 fake Skate */
+@keyframes npcSkateBounce {
+  0%, 92%, 100% {
+    transform: translateY(0);
+  }
+  95% {
+    transform: translateY(-8px);
+  }
+}
+
+.npc-skate-bounce {
+  animation: npcSkateBounce infinite ease-in-out;
+}
 
 /* 🔥 stronger + snappier bounce */
 @keyframes npcBounce {
