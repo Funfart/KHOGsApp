@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 const WORLD_WIDTH = 2560;
-const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
+const BASE_CID = "https://ipfs.io/ipfs/bafybeibfxdrczze54ghfsikviisgq7g2dscu36tfsecyy63ths5i5kk4ye";
+
+//Array of 46 
+//const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
 
 function getRandomNPC() {
-  const i = Math.floor(Math.random() * 46) + 1;
+  //const i = Math.floor(Math.random() * 46) + 1;
+  const i = Math.floor(Math.random() * 8) + 1;
   return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
 }
 
