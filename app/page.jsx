@@ -19,6 +19,9 @@ export default function Page() {
   const [nfts, setNfts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [showMintModal, setShowMintModal] = useState(false);
+  const [minting, setMinting] = useState(false);
+  
   const [confettiTrigger, setConfettiTrigger] = useState(0);
   const [scene, setScene] = useState('landing'); // 'landing' | 'shop'
   const [transitioning, setTransitioning] = useState(false);
