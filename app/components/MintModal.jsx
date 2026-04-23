@@ -8,7 +8,7 @@ export default function MintModal({ onClose, onMint, minting }) {
         <div className="modal-text">
           🎁 Free Mint on Base Network  
           ✔ No ETH cost  
-          ✔ Verified contract 
+          ✔ Verified contract ✔
         </div>
         <a
           href="https://basescan.org/address/0x8f864Dcc9125466C7b8e224b870585f219f6FC4b"
