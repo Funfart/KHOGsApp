@@ -13,7 +13,6 @@ import Confetti from './components/Confetti';
 //import ShopWalker from './components/ShopWalker';
 import MintModal from './components/MintModal';
 import { mintDIBBS } from './lib/mint';
-import { ensureBaseNetwork } from './lib/switchNetwork';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -30,8 +29,6 @@ export default function Page() {
   const [transitioning, setTransitioning] = useState(false);
 
   const [isMobile, setIsMobile] = useState(false);
-
-  const [isBaseNetwork, setIsBaseNetwork] = useState(false);
 
 useEffect(() => {
   const update = () => setIsMobile(window.innerWidth < 900);
@@ -53,32 +50,6 @@ useEffect(() => {
     reconnectWallet(setWallet);
   }, []);
 
-useEffect(() => {
-  async function checkNetwork() {
-    if (!window.ethereum) return;
-
-    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-
-    // Base Mainnet = 8453
-    setIsBaseNetwork(chainId === '0x2105');
-  }
-
-  checkNetwork();
-
-  // listen for network changes
-  if (window.ethereum) {
-    window.ethereum.on('chainChanged', checkNetwork);
-  }
-  
-  return () => {
-    if (window.ethereum) {
-      window.ethereum.removeListener('chainChanged', checkNetwork);
-    }
-  };
-}, [wallet]);
-
-
-  
   // 🎯 NFT FETCH
 useEffect(() => {
   if (tab === 3 && wallet && nfts.length === 0) {
@@ -92,66 +63,19 @@ useEffect(() => {
     });
   }
 }, [tab, wallet]);
-  
-  async function switchToBase() {
-  if (!window.ethereum) return;
 
-  try {
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x2105' }]
-    });
-  } catch (err) {
-    if (err.code === 4902) {
-      await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: '0x2105',
-          chainName: 'Base Mainnet',
-          nativeCurrency: {
-            name: 'ETH',
-            symbol: 'ETH',
-            decimals: 18
-          },
-          rpcUrls: ['https://mainnet.base.org'],
-          blockExplorerUrls: ['https://basescan.org']
-        }]
-      });
-    }
-  }
-}
   async function handleMint() {
   try {
-    if (!wallet) {
-      alert("Connect wallet first");
-      return;
-    }
-
     setMinting(true);
 
-    // ✅ Force network switch FIRST
-    await switchToBase();
-
-    // ✅ Double-check chain after switch
-    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    if (chainId !== '0x2105') {
-      throw new Error("Still not on Base");
-    }
-
-    // ✅ Execute mint
     await mintDIBBS({ id: 0, amount: 1 });
 
-    // 🎉 Success
-    setConfettiTrigger(p => p + 1);
+    setConfettiTrigger(prev => prev + 1); // 🎉 success burst
     setShowMintModal(false);
 
   } catch (err) {
-    console.error("MINT ERROR:", err);
-
-    alert(
-      err?.message || "Mint failed. Check network + wallet."
-    );
-
+    console.error(err);
+    alert(err.message || "Mint failed");
   } finally {
     setMinting(false);
   }
@@ -203,7 +127,6 @@ useEffect(() => {
     };
   }, []);
 
-  
   return (
     <div className="viewport">
       <Confetti trigger={confettiTrigger} />
@@ -240,12 +163,12 @@ useEffect(() => {
       />
       
       {tab === 3 && wallet && (
-  <button
-    className="modal-btn secondary"
-    onClick={() => setShowMintModal(true)}
-  >
-    Mint Free DIBBS
-  </button>
+        <button
+          className="mint-btn"
+          onClick={() => setShowMintModal(true)}
+        >
+          🎁 Free Mint
+        </button>
       )}
       
       {/* 🔗 WALLET */}
