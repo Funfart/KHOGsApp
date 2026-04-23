@@ -64,18 +64,40 @@ useEffect(() => {
   }
 }, [tab, wallet]);
 
-  async function handleMint() {
+async function handleMint() {
   try {
     setMinting(true);
 
+    // 🔒 ENSURE NETWORK FIRST
+    await ensureBaseNetwork();
+
+    // 🎯 MINT
     await mintDIBBS({ id: 0, amount: 1 });
 
-    setConfettiTrigger(prev => prev + 1); // 🎉 success burst
+    setConfettiTrigger(prev => prev + 1);
     setShowMintModal(false);
 
   } catch (err) {
     console.error(err);
-    alert(err.message || "Mint failed");
+
+    const msg = err?.message || "";
+
+    // 🎯 CUSTOM COOLDOWN MESSAGE
+    if (
+      msg.includes("COOLDOWN") ||
+      msg.toLowerCase().includes("cooldown")
+    ) {
+      alert("You Already Claimed DIBBS — Put Your Friends On...");
+    }
+
+    else if (msg.includes("User rejected")) {
+      alert("Switch to Base to mint.");
+    }
+
+    else {
+      alert(msg || "Mint failed");
+    }
+
   } finally {
     setMinting(false);
   }
