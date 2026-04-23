@@ -31,6 +31,8 @@ export default function Page() {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  const [isBaseNetwork, setIsBaseNetwork] = useState(false);
+
 useEffect(() => {
   const update = () => setIsMobile(window.innerWidth < 900);
 
@@ -51,6 +53,59 @@ useEffect(() => {
     reconnectWallet(setWallet);
   }, []);
 
+useEffect(() => {
+  async function checkNetwork() {
+    if (!window.ethereum) return;
+
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+
+    // Base Mainnet = 8453
+    setIsBaseNetwork(chainId === '0x2105');
+  }
+
+  checkNetwork();
+
+  // listen for network changes
+  if (window.ethereum) {
+    window.ethereum.on('chainChanged', checkNetwork);
+  }
+
+async function switchToBase() {
+  if (!window.ethereum) return;
+
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x2105' }]
+    });
+  } catch (err) {
+    // if Base not added → add it
+    if (err.code === 4902) {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: '0x2105',
+          chainName: 'Base Mainnet',
+          nativeCurrency: {
+            name: 'ETH',
+            symbol: 'ETH',
+            decimals: 18
+          },
+          rpcUrls: ['https://mainnet.base.org'],
+          blockExplorerUrls: ['https://basescan.org']
+        }]
+      });
+    }
+  }
+}
+  
+  return () => {
+    if (window.ethereum) {
+      window.ethereum.removeListener('chainChanged', checkNetwork);
+    }
+  };
+}, [wallet]);
+  
   // 🎯 NFT FETCH
 useEffect(() => {
   if (tab === 3 && wallet && nfts.length === 0) {
@@ -69,14 +124,24 @@ useEffect(() => {
   try {
     setMinting(true);
 
+    // 🧠 CRITICAL STEP
+    await ensureBaseNetwork();
+
+    // 👉 only runs AFTER correct network
     await mintDIBBS({ id: 0, amount: 1 });
 
-    setConfettiTrigger(prev => prev + 1); // 🎉 success burst
+    setConfettiTrigger(prev => prev + 1);
     setShowMintModal(false);
 
   } catch (err) {
     console.error(err);
-    alert(err.message || "Mint failed");
+
+    if (err.message.includes("switch")) {
+      alert("Switch to Base network to mint.");
+    } else {
+      alert(err.message || "Mint failed");
+    }
+
   } finally {
     setMinting(false);
   }
@@ -164,12 +229,40 @@ useEffect(() => {
       />
       
       {tab === 3 && wallet && (
-        <button
-          className="mint-btn"
-          onClick={() => setShowMintModal(true)}
-        >
-          🎁 Free Mint
-        </button>
+<button
+  className="modal-btn secondary"
+  disabled={!wallet || !isBaseNetwork || minting}
+  onClick={async () => {
+    if (!wallet) return;
+
+    // 🚨 Force network first
+    if (!isBaseNetwork) {
+      await switchToBase();
+      return;
+    }
+
+    setMinting(true);
+
+    try {
+      await mintDIBBS(wallet);
+      if (chainId !== 8453) throw new Error("Wrong network");
+      setConfettiTrigger(p => p + 1);
+    } catch (err) {
+      console.error(err);
+      alert("Mint failed");
+    }
+
+    setMinting(false);
+  }}
+>
+  {!wallet
+    ? "Connect Wallet"
+    : !isBaseNetwork
+    ? "Switch to Base"
+    : minting
+    ? "Minting..."
+    : "Mint Free DIBBS"}
+</button>
       )}
       
       {/* 🔗 WALLET */}
