@@ -13,6 +13,7 @@ import Confetti from './components/Confetti';
 //import ShopWalker from './components/ShopWalker';
 import MintModal from './components/MintModal';
 import { mintDIBBS } from './lib/mint';
+import { ensureBaseNetwork } from './lib/switchNetwork';
 
 export default function Page() {
   const tabsRef = useRef([]);
