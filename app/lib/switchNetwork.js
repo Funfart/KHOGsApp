@@ -1,36 +1,54 @@
 export async function ensureBaseNetwork() {
   if (!window.ethereum) throw new Error("No wallet");
 
-  const provider = window.ethereum;
+  const BASE_CHAIN_ID = '0x2105';
 
-  const currentChain = await provider.request({
+  const current = await window.ethereum.request({
     method: 'eth_chainId'
   });
 
-  // ✅ Already on Base
-  if (currentChain === '0x2105') return true;
+  if (current === BASE_CHAIN_ID) return true;
 
   try {
-    // 👉 Try switching
-    await provider.request({
+    await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x2105' }]
+      params: [{ chainId: BASE_CHAIN_ID }]
+    });
+
+    // ✅ wait for actual confirmation
+    await new Promise((resolve) => {
+      const handler = (chainId) => {
+        if (chainId === BASE_CHAIN_ID) {
+          window.ethereum.removeListener('chainChanged', handler);
+          resolve();
+        }
+      };
+      window.ethereum.on('chainChanged', handler);
     });
 
     return true;
 
   } catch (err) {
-    // 🔥 If Base not added → add it
     if (err.code === 4902) {
-      await provider.request({
+      // chain not added → add it
+      await window.ethereum.request({
         method: 'wallet_addEthereumChain',
-        params: [BASE_CHAIN]
+        params: [{
+          chainId: BASE_CHAIN_ID,
+          chainName: 'Base Mainnet',
+          nativeCurrency: {
+            name: 'ETH',
+            symbol: 'ETH',
+            decimals: 18
+          },
+          rpcUrls: ['https://mainnet.base.org'],
+          blockExplorerUrls: ['https://basescan.org']
+        }]
       });
 
       return true;
     }
 
-    // ❌ User rejected or failed
-    throw new Error("Please switch to Base network");
+    throw new Error("User rejected network switch");
   }
 }
