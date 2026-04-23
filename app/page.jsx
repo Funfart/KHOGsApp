@@ -11,6 +11,8 @@ import NPCManager from './components/NPCManager';
 import ShopScene from './components/ShopScene';
 import Confetti from './components/Confetti';
 //import ShopWalker from './components/ShopWalker';
+import MintModal from './components/MintModal';
+import { mintDIBBS } from './lib/mint';
 
 export default function Page() {
   const tabsRef = useRef([]);
@@ -62,7 +64,22 @@ useEffect(() => {
   }
 }, [tab, wallet]);
 
-  
+  async function handleMint() {
+  try {
+    setMinting(true);
+
+    await mintDIBBS({ id: 0, amount: 1 });
+
+    setConfettiTrigger(prev => prev + 1); // 🎉 success burst
+    setShowMintModal(false);
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Mint failed");
+  } finally {
+    setMinting(false);
+  }
+}
   // 🎮 SCALE ENGINE (FULL + CORRECT)
 useEffect(() => {
   function updateScale() {
@@ -144,7 +161,16 @@ useEffect(() => {
         tabsRef={tabsRef}
         activeTab={tab}
       />
-
+      
+      {tab === 3 && wallet && (
+        <button
+          className="mint-btn"
+          onClick={() => setShowMintModal(true)}
+        >
+          🎁 Free Mint
+        </button>
+      )}
+      
       {/* 🔗 WALLET */}
       <button
         className="wallet"
@@ -244,6 +270,14 @@ useEffect(() => {
         </div>
       )}
       
+      {showMintModal && (
+      <MintModal
+        onClose={() => setShowMintModal(false)}
+        onMint={handleMint}
+        minting={minting}
+      />
+      )}
+          
       <style jsx global>{`
 
 /* 🔒 GLOBAL */
@@ -676,6 +710,28 @@ object-fit: cover;
   pointer-events: none;
   z-index: 9999;
   overflow: hidden;
+}
+
+.mint-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+
+  z-index: 30;
+
+  padding: 12px 18px;
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.9);
+  color: black;
+
+  font-weight: 700;
+
+  transition: transform 0.15s ease;
+}
+
+.mint-btn:active {
+  transform: scale(0.92);
 }
 
       `}</style>
