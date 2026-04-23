@@ -77,6 +77,22 @@ useEffect(() => {
   };
 }, [wallet]);
 
+
+  
+  // 🎯 NFT FETCH
+useEffect(() => {
+  if (tab === 3 && wallet && nfts.length === 0) {
+    fetchNFTs(wallet).then((data) => {
+      setNfts(data || []);
+      setActiveIndex(0);
+
+      if (data && data.length > 0) {
+        setConfettiTrigger(prev => prev + 1); // 🔥 TRIGGER
+      }
+    });
+  }
+}, [tab, wallet]);
+  
   async function switchToBase() {
   if (!window.ethereum) return;
 
@@ -104,43 +120,37 @@ useEffect(() => {
     }
   }
 }
-  
-  // 🎯 NFT FETCH
-useEffect(() => {
-  if (tab === 3 && wallet && nfts.length === 0) {
-    fetchNFTs(wallet).then((data) => {
-      setNfts(data || []);
-      setActiveIndex(0);
-
-      if (data && data.length > 0) {
-        setConfettiTrigger(prev => prev + 1); // 🔥 TRIGGER
-      }
-    });
-  }
-}, [tab, wallet]);
-  
-
   async function handleMint() {
   try {
+    if (!wallet) {
+      alert("Connect wallet first");
+      return;
+    }
+
     setMinting(true);
 
-    // 🧠 CRITICAL STEP
-    await ensureBaseNetwork();
+    // ✅ Force network switch FIRST
+    await switchToBase();
 
-    // 👉 only runs AFTER correct network
+    // ✅ Double-check chain after switch
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (chainId !== '0x2105') {
+      throw new Error("Still not on Base");
+    }
+
+    // ✅ Execute mint
     await mintDIBBS({ id: 0, amount: 1 });
 
-    setConfettiTrigger(prev => prev + 1);
+    // 🎉 Success
+    setConfettiTrigger(p => p + 1);
     setShowMintModal(false);
 
   } catch (err) {
-    console.error(err);
+    console.error("MINT ERROR:", err);
 
-    if (err.message.includes("switch")) {
-      alert("Switch to Base network to mint.");
-    } else {
-      alert(err.message || "Mint failed");
-    }
+    alert(
+      err?.message || "Mint failed. Check network + wallet."
+    );
 
   } finally {
     setMinting(false);
@@ -232,28 +242,9 @@ useEffect(() => {
       {tab === 3 && wallet && (
   <button
     className="modal-btn secondary"
-    disabled={!wallet || minting}
-    onClick={async () => {
-      if (!wallet) return;
-
-      try {
-        setMinting(true);
-
-        // 🔥 Always enforce Base BEFORE mint
-        await ensureBaseNetwork();
-
-        await mintDIBBS({ id: 0, amount: 1 });
-
-        setConfettiTrigger(p => p + 1);
-      } catch (err) {
-        console.error(err);
-        alert(err.message || "Mint failed");
-      } finally {
-        setMinting(false);
-      }
-    }}
+    onClick={() => setShowMintModal(true)}
   >
-    {minting ? "Minting..." : "Mint Free DIBBS"}
+    Mint Free DIBBS
   </button>
       )}
       
