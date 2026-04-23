@@ -230,7 +230,6 @@ useEffect(() => {
       />
       
       {tab === 3 && wallet && (
-      <button
         <button
           className="modal-btn secondary"
           disabled={minting}
