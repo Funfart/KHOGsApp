@@ -6,7 +6,9 @@ export default function MintModal({ onClose, onMint, minting }) {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
 
         <div className="modal-text">
-          🎁 Exclusive FREE Mint
+          🎁 Free Mint on Base Network  
+          ✔ No ETH cost  
+          ✔ Verified contract 
         </div>
 
         <img
@@ -21,12 +23,6 @@ export default function MintModal({ onClose, onMint, minting }) {
         <div className="modal-sub">
           Claim your DIBBS Artifact (Limit 3 per wallet)
         </div>
-        <div className="mint-explain">
-          🎁 Free Mint on Base Network  
-          ✔ No ETH cost  
-          ✔ Verified contract  
-        </div>
-        
         <a
           href="https://basescan.org/address/0x8f864Dcc9125466C7b8e224b870585f219f6FC4b"
           target="_blank"
