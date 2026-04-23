@@ -10,7 +10,12 @@ export default function MintModal({ onClose, onMint, minting }) {
           ✔ No ETH cost  
           ✔ Verified contract 
         </div>
-
+        <a
+          href="https://basescan.org/address/0x8f864Dcc9125466C7b8e224b870585f219f6FC4b"
+          target="_blank"
+        >
+          View Contract
+        </a>
         <img
           src="https://ipfs.io/ipfs/bafybeicinhd4gy3c52ybyh4xqr6eql7nokpl37vc4zx2rl3pkylbn26lym"
           style={{
@@ -23,12 +28,6 @@ export default function MintModal({ onClose, onMint, minting }) {
         <div className="modal-sub">
           Claim your DIBBS Artifact (Limit 3 per wallet)
         </div>
-        <a
-          href="https://basescan.org/address/0x8f864Dcc9125466C7b8e224b870585f219f6FC4b"
-          target="_blank"
-        >
-          View Contract
-        </a>
 
         <button
           className="modal-btn"
