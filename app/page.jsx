@@ -69,8 +69,15 @@ useEffect(() => {
   if (window.ethereum) {
     window.ethereum.on('chainChanged', checkNetwork);
   }
+  
+  return () => {
+    if (window.ethereum) {
+      window.ethereum.removeListener('chainChanged', checkNetwork);
+    }
+  };
+}, [wallet]);
 
-async function switchToBase() {
+  async function switchToBase() {
   if (!window.ethereum) return;
 
   try {
@@ -79,7 +86,6 @@ async function switchToBase() {
       params: [{ chainId: '0x2105' }]
     });
   } catch (err) {
-    // if Base not added → add it
     if (err.code === 4902) {
       await window.ethereum.request({
         method: 'wallet_addEthereumChain',
@@ -99,13 +105,6 @@ async function switchToBase() {
   }
 }
   
-  return () => {
-    if (window.ethereum) {
-      window.ethereum.removeListener('chainChanged', checkNetwork);
-    }
-  };
-}, [wallet]);
-  
   // 🎯 NFT FETCH
 useEffect(() => {
   if (tab === 3 && wallet && nfts.length === 0) {
@@ -119,6 +118,7 @@ useEffect(() => {
     });
   }
 }, [tab, wallet]);
+  
 
   async function handleMint() {
   try {
@@ -193,6 +193,7 @@ useEffect(() => {
     };
   }, []);
 
+  
   return (
     <div className="viewport">
       <Confetti trigger={confettiTrigger} />
@@ -229,40 +230,29 @@ useEffect(() => {
       />
       
       {tab === 3 && wallet && (
-<button
-  className="modal-btn secondary"
-  disabled={!wallet || !isBaseNetwork || minting}
-  onClick={async () => {
-    if (!wallet) return;
-
-    // 🚨 Force network first
-    if (!isBaseNetwork) {
-      await switchToBase();
-      return;
-    }
-
-    setMinting(true);
-
-    try {
-      await mintDIBBS(wallet);
-      if (chainId !== 8453) throw new Error("Wrong network");
-      setConfettiTrigger(p => p + 1);
-    } catch (err) {
-      console.error(err);
-      alert("Mint failed");
-    }
-
-    setMinting(false);
-  }}
->
-  {!wallet
-    ? "Connect Wallet"
-    : !isBaseNetwork
-    ? "Switch to Base"
-    : minting
-    ? "Minting..."
-    : "Mint Free DIBBS"}
-</button>
+      <button
+        <button
+          className="modal-btn secondary"
+          disabled={minting}
+          onClick={async () => {
+            if (!wallet) return;
+      
+            if (!isBaseNetwork) {
+              await switchToBase();
+              return;
+            }
+      
+            setShowMintModal(true); // ✅ use modal flow
+          }}
+        >
+          {!wallet
+            ? "Connect Wallet"
+            : !isBaseNetwork
+            ? "Switch to Base"
+            : minting
+            ? "Minting..."
+            : "Mint Free DIBBS"}
+        </button>
       )}
       
       {/* 🔗 WALLET */}
