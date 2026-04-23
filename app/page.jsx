@@ -230,28 +230,31 @@ useEffect(() => {
       />
       
       {tab === 3 && wallet && (
-        <button
-          className="modal-btn secondary"
-          disabled={minting}
-          onClick={async () => {
-            if (!wallet) return;
-      
-            if (!isBaseNetwork) {
-              await switchToBase();
-              return;
-            }
-      
-            setShowMintModal(true); // ✅ use modal flow
-          }}
-        >
-          {!wallet
-            ? "Connect Wallet"
-            : !isBaseNetwork
-            ? "Switch to Base"
-            : minting
-            ? "Minting..."
-            : "Mint Free DIBBS"}
-        </button>
+  <button
+    className="modal-btn secondary"
+    disabled={!wallet || minting}
+    onClick={async () => {
+      if (!wallet) return;
+
+      try {
+        setMinting(true);
+
+        // 🔥 Always enforce Base BEFORE mint
+        await ensureBaseNetwork();
+
+        await mintDIBBS({ id: 0, amount: 1 });
+
+        setConfettiTrigger(p => p + 1);
+      } catch (err) {
+        console.error(err);
+        alert(err.message || "Mint failed");
+      } finally {
+        setMinting(false);
+      }
+    }}
+  >
+    {minting ? "Minting..." : "Mint Free DIBBS"}
+  </button>
       )}
       
       {/* 🔗 WALLET */}
