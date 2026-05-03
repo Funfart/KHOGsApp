@@ -160,7 +160,9 @@ useEffect(() => {
     <div className="scene">
     <img
       className="bg"
-      src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+     // src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+      
+      src="https://ipfs.io/ipfs/ bafybeieia2zbu22h5pxt53trwqciitjxepccpwbphc34kwmxdoulsztpri"
       alt="background"
     />
 
