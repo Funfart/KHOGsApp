@@ -10,7 +10,7 @@ const BASE_CID = "https://ipfs.io/ipfs/bafybeidbadpljhiaj3xw7kzbsysdfsqe2ke4pbia
 
 function getRandomNPC() {
   //const i = Math.floor(Math.random() * 46) + 1;
-  const i = Math.floor(Math.random() * 8) + 1;
+  const i = Math.floor(Math.random() * 6) + 1;
   return `${BASE_CID}/KnuckleheadsOG%23${i}.png`;
 }
 
