@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const WORLD_WIDTH = 2560;
-const BASE_CID = "https://ipfs.io/ipfs/bafybeidbadpljhiaj3xw7kzbsysdfsqe2ke4pbiatbhtbr3jprj6qj5xsu";
+const BASE_CID = "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeidbadpljhiaj3xw7kzbsysdfsqe2ke4pbiatbhtbr3jprj6qj5xsu";
 
 //Array of 46 
 //const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
