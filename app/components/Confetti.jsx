@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const CONFETTI_SRC = "https://ipfs.io/ipfs/bafkreiftwyllxleqocv23bwiorpxf5rse4mirzcrci6w4b52cq435nnbpu";
+const CONFETTI_SRC = "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafkreiftwyllxleqocv23bwiorpxf5rse4mirzcrci6w4b52cq435nnbpu";
 
 export default function Confetti({ trigger }) {
   const [pieces, setPieces] = useState([]);
