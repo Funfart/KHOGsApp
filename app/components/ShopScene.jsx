@@ -6,13 +6,13 @@ import ShopWalker from './ShopWalker';
 
 const BG =
   //"https://ipfs.io/ipfs/bafybeiakrcczgynayzfosyklhq4vehyuugwieeujyfuebwhd6ipgf2o7fq";
-  "https://ipfs.io/ipfs/bafybeieia2zbu22h5pxt53trwqciitjxepccpwbphc34kwmxdoulsztpri";
+  "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeieia2zbu22h5pxt53trwqciitjxepccpwbphc34kwmxdoulsztpri";
 
 const COUNTER_BACK =
-  "https://ipfs.io/ipfs/bafybeiguouijuhj3k4ilyibnp324c3glfmsj6vumxy3lxduim6z3grllmm";
+  "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeiguouijuhj3k4ilyibnp324c3glfmsj6vumxy3lxduim6z3grllmm";
 
 const COUNTER_FRONT =
-  "https://ipfs.io/ipfs/bafybeihwur3phaaphvzu3w57obpjaqwdhdnsfjwwyxc2hi5wet6rg6t5ia";
+  "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeihwur3phaaphvzu3w57obpjaqwdhdnsfjwwyxc2hi5wet6rg6t5ia";
 
 export default function ShopScene({ tab, tabsRef }) {
   return (
