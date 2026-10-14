@@ -33,7 +33,7 @@ export default function Page() {
 
   
 const PINATA_GATEWAY =
-  'https://gold-junior-swordfish-840.mypinata.cloud/ipfs/';
+  'https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/';
 
 const BACKGROUND_CID =
   'bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby';
