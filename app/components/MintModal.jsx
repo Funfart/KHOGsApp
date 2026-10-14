@@ -17,7 +17,7 @@ export default function MintModal({ onClose, onMint, minting }) {
           View Contract
         </a>
         <img
-          src="https://ipfs.io/ipfs/bafybeicinhd4gy3c52ybyh4xqr6eql7nokpl37vc4zx2rl3pkylbn26lym"
+          src="https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeicinhd4gy3c52ybyh4xqr6eql7nokpl37vc4zx2rl3pkylbn26lym"
           style={{
             width: '100%',
             borderRadius: '12px',
