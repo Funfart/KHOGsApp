@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import NPC from './NPC';
 
-const BASE_CID = "https://ipfs.io/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
+const BASE_CID = "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafybeide4mwhz4hzck5tnpchd4h5tsexsj6ij4nxddz2jaeqwb3bib5wyy";
 const WORLD_WIDTH = 2560;
 
 export default function NPCManager() {
