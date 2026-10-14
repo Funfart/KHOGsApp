@@ -3,10 +3,10 @@
 import { useState, useRef } from 'react';
 
 const CLOSED =
-  "https://ipfs.io/ipfs/bafkreicelhsdslcflfflph3hwsez3ytdle53nbnyr3i7f4yain4d5tbtqy";
+  "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafkreicelhsdslcflfflph3hwsez3ytdle53nbnyr3i7f4yain4d5tbtqy";
 
 const OPEN =
-  "https://ipfs.io/ipfs/bafkreicngryldkw3ntzgndo3dsoowfee7i7jbp5kmerrdadrjonqhzsome";
+  "https://aqua-worried-orangutan-223.mypinata.cloud/ipfs/bafkreicngryldkw3ntzgndo3dsoowfee7i7jbp5kmerrdadrjonqhzsome";
 
 export default function Door({ onEnter }) {
   const [isOpen, setIsOpen] = useState(false);
