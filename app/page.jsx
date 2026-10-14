@@ -160,7 +160,7 @@ useEffect(() => {
     <div className="scene">
     <img
       className="bg"
-       src="https://ipfs.io/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
+       src="https://gold-junior-swordfish-840.mypinata.cloud/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
       alt="background"
     />
 
