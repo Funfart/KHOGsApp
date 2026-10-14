@@ -31,6 +31,14 @@ export default function Page() {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  
+const PINATA_GATEWAY =
+  'https://gold-junior-swordfish-840.mypinata.cloud/ipfs/';
+
+const BACKGROUND_CID =
+  'bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby';
+
+
 useEffect(() => {
   const update = () => setIsMobile(window.innerWidth < 900);
 
@@ -158,11 +166,13 @@ useEffect(() => {
 
   {scene === 'landing' && (
     <div className="scene">
-    <img
-      className="bg"
-       src="https://gold-junior-swordfish-840.mypinata.cloud/ipfs/bafybeih56xgsgacrqmx7mgh5zwd5f72ptngrr4xgrbyl4ghvh54ooomlby"
-      alt="background"
-    />
+      
+<img
+  className="bg"
+  src={`${PINATA_GATEWAY}${BACKGROUND_CID}`}
+  alt="background"
+/>
+
 
       <Door onEnter={() => setShowDoorModal(true)} />
       <Character currentTab={tab} tabsRef={tabsRef} scale={1.2} />
